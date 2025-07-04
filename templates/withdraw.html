@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Money - Talk2Fill</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Add recording status and wave animation elements -->
+    <div id="recordingStatus" class="recording-status"></div>
+    <div id="recordingWave" class="recording-wave"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">Talk2Fill</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="deposit.html">Deposit</a>
+                <a href="withdraw.html">Withdraw</a>
+                <a href="account-opening.html">Open Account</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Main Content -->
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title" data-en="Withdraw Money" data-te="డబ్బు ఉపసంహరించండి" data-hi="पैसे निकालें">Withdraw Money</h1>
+                <div class="language-selector">
+                    <label for="languageSelect" class="form-label" data-en="Select Language:" data-te="భాషను ఎంచుకోండి:" data-hi="भाषा चुनें:">Select Language:</label>
+                    <select id="languageSelect" class="language-select">
+                        <option value="en">English</option>
+                        <option value="te">Telugu</option>
+                        <option value="hi">Hindi</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="errorMessage" class="message error-message"></div>
+            <div id="successMessage" class="message success-message"></div>
+
+            <!-- Withdrawal Form -->
+            <form id="withdrawForm" class="withdraw-form">
+                <div class="form-group">
+                    <label for="branchName" class="form-label" data-en="Branch Name" data-te="శాఖ పేరు" data-hi="शाखा का नाम">Branch Name</label>
+                    <input type="text" id="branchName" name="branchName" class="form-control" required>
+                    <small class="form-text" data-en="Example: SBI Hyderabad Main Branch" data-te="ఉదాహరణ: SBI హైదరాబాద్ మెయిన్ బ్రాంచ్" data-hi="उदाहरण: SBI हैदराबाद मुख्य शाखा">Example: SBI Hyderabad Main Branch</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="accountNumber" class="form-label" data-en="Account Number" data-te="ఖాతా సంఖ్య" data-hi="खाता संख्या">Account Number</label>
+                    <input type="text" id="accountNumber" name="accountNumber" class="form-control" required
+                           pattern="[0-9]{12}" title="Please enter a valid 12-digit account number">
+                    <small class="form-text" data-en="Example: 123456789012" data-te="ఉదాహరణ: 123456789012" data-hi="उदाहरण: 123456789012">Example: 123456789012</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="accountHolderName" class="form-label" data-en="Account Holder's Name" data-te="ఖాతా యజమాని పేరు" data-hi="खाताधारक का नाम">Account Holder's Name</label>
+                    <input type="text" id="accountHolderName" name="accountHolderName" class="form-control" required>
+                    <small class="form-text" data-en="Example: Karthikeya Reddy" data-te="ఉదాహరణ: కార్తికేయ రెడ్డి" data-hi="उदाहरण: कार्तिकेय रेड्डी">Example Reddy</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount" class="form-label" data-en="Amount to Withdraw" data-te="ఉపసంహరించడానికి మొత్తం" data-hi="निकालने की राशि">Amount to Withdraw</label>
+                    <input type="number" id="amount" name="amount" class="form-control" required
+                           min="0" step="0.01" title="Please enter a valid amount">
+                    <small class="form-text" data-en="Example: 5000" data-te="ఉదాహరణ: 5000" data-hi="उदाहरण: 5000">Example: 5000</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="withdrawalMode" class="form-label" data-en="Mode of Withdrawal" data-te="ఉపసంహరణ మోడ్" data-hi="निकासी का तरीका">Mode of Withdrawal</label>
+                    <select id="withdrawalMode" name="withdrawalMode" class="form-control" required>
+                        <option value="">Select mode</option>
+                        <option value="cash" data-en="Cash" data-te="నగదు" data-hi="नकद">Cash</option>
+                        <option value="cheque" data-en="Cheque" data-te="చెక్" data-hi="चेक">Cheque</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="chequeDetailsGroup" style="display: none;">
+                    <label for="chequeNumber" class="form-label" data-en="Cheque Number" data-te="చెక్ సంఖ్య" data-hi="चेक नंबर">Cheque Number</label>
+                    <input type="text" id="chequeNumber" name="chequeNumber" class="form-control">
+                    <label for="chequeBankName" class="form-label" data-en="Bank Name" data-te="బ్యాంక్ పేరు" data-hi="बैंक का नाम">Bank Name</label>
+                    <input type="text" id="chequeBankName" name="chequeBankName" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" data-en="Submit Withdrawal" data-te="ఉపసంహరణ సమర్పించండి" data-hi="निकासी जमा करें">Submit Withdrawal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Voice Input Button -->
+    <button id="floatingVoiceBtn" class="floating-voice-btn" title="Voice Input">
+        <i class="fas fa-microphone"></i>
+    </button>
+    <div id="floatingVoiceStatus" class="floating-voice-status"></div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-icon">
+                <div class="modal-timer">6</div>
+            </div>
+            <h2 class="modal-title">Are you sure?</h2>
+            <p id="modalMessage" class="modal-message"></p>
+            <div class="modal-buttons">
+                <button id="modalCancel" class="modal-btn modal-btn-cancel">Cancel</button>
+                <button id="modalConfirm" class="modal-btn modal-btn-confirm">Yes, confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        // Initialize jsPDF
+        window.jsPDF = window.jspdf.jsPDF;
+
+        function generateWithdrawPDF(formData) {
+            // Calculate required height based on content
+            let contentHeight = 0;
+            let y = 20; // Starting y position
+
+            // Header section (bank name, title, transaction details)
+            y += 20; // Bank name
+            y += 15; // Title
+            y += 15; // Transaction Details heading
+            y += 15; // Branch and date
+
+            // Account details
+            y += 15; // Account Number
+            y += 15; // Account Holder
+
+            // Transaction details
+            y += 15; // Transaction Type
+            y += 15; // Amount
+
+            // Denomination details if cash withdrawal
+            if (formData.get('withdrawalMode') === 'cash') {
+                const denominations = [
+                    { label: "2000", value: formData.get('2000') },
+                    { label: "500", value: formData.get('500') },
+                    { label: "200", value: formData.get('200') },
+                    { label: "100", value: formData.get('100') },
+                    { label: "50", value: formData.get('50') },
+                    { label: "20", value: formData.get('20') },
+                    { label: "10", value: formData.get('10') },
+                    { label: "5", value: formData.get('5') },
+                    { label: "2", value: formData.get('2') },
+                    { label: "1", value: formData.get('1') }
+                ];
+
+                const validDenominations = denominations.filter(denom => denom.value);
+                y += validDenominations.length * 15; // 15mm per denomination
+            }
+
+            // Cheque details if cheque withdrawal
+            if (formData.get('withdrawalMode') === 'cheque') {
+                y += 15; // Cheque Number
+                y += 15; // Bank Name
+            }
+
+            // Signature section
+            y += 20; // Signatures heading
+            y += 15; // Signature lines and labels
+
+            // Add some padding at the bottom
+            y += 20;
+
+            // Create PDF with calculated height
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: [210, y] // Width: 210mm (A4 width), Height: calculated height
+            });
+
+            // Set default colors
+            const primaryColor = '#1a237e'; // Deep blue
+            const secondaryColor = '#455a64'; // Dark gray
+            const accentColor = '#1976d2'; // Light blue
+            const textColor = '#212121'; // Dark gray for text
+            const borderColor = '#bdbdbd'; // Light gray for borders
+
+            // Add bank name at top - bigger and bold with primary color
+            doc.setTextColor(primaryColor);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text("Talk2Fill Bank", 105, 20, { align: "center" });
+            
+            // Add form title with underline
+            doc.setFontSize(14);
+            doc.text("WITHDRAWAL SLIP", 105, 35, { align: "center" });
+            doc.setLineWidth(0.2);
+            doc.setDrawColor(primaryColor);
+            doc.line(40, 40, 170, 40);
+
+            // Get current date
+            const currentDate = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Add Transaction Details heading with accent color
+            doc.setTextColor(accentColor);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text("Transaction Details", 20, 55);
+            doc.setTextColor(textColor);
+            doc.setFont(undefined, 'normal');
+
+            // Add branch and date side by side
+            doc.setFontSize(11);
+            
+            // Branch (left side)
+            doc.setFont(undefined, 'bold');
+            doc.text("Branch:", 20, 65);
+            doc.setFont(undefined, 'normal');
+            doc.setDrawColor(borderColor);
+            doc.line(65, 65, 120, 65);
+            doc.text(formData.get('branchName') || "Main Branch", 70, 64);
+            
+            // Date (right side)
+            doc.setFont(undefined, 'bold');
+            doc.text("Date:", 130, 65);
+            doc.setFont(undefined, 'normal');
+            doc.line(165, 65, 190, 65);
+            doc.text(currentDate, 170, 64);
+
+            // Helper function to create label with underline
+            function addField(label, value, y) {
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(secondaryColor);
+                doc.text(label + ":", 20, y);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(textColor);
+                doc.setDrawColor(borderColor);
+                doc.line(65, y, 190, y);
+                if (value) doc.text(value, 70, y - 1);
+            }
+
+            // Add account details
+            addField("Account Number", formData.get('accountNumber'), 80);
+            addField("Account Holder", formData.get('accountHolderName'), 95);
+
+            // Add transaction details
+            addField("Transaction Type", formData.get('withdrawalMode'), 110);
+            addField("Amount", formData.get('amount'), 125);
+
+            // Add denomination details if cash withdrawal
+            if (formData.get('withdrawalMode') === 'cash') {
+                let y = 140;
+                const denominations = [
+                    { label: "2000", value: formData.get('2000') },
+                    { label: "500", value: formData.get('500') },
+                    { label: "200", value: formData.get('200') },
+                    { label: "100", value: formData.get('100') },
+                    { label: "50", value: formData.get('50') },
+                    { label: "20", value: formData.get('20') },
+                    { label: "10", value: formData.get('10') },
+                    { label: "5", value: formData.get('5') },
+                    { label: "2", value: formData.get('2') },
+                    { label: "1", value: formData.get('1') }
+                ];
+
+                denominations.forEach(denom => {
+                    if (denom.value) {
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(secondaryColor);
+                        doc.text(denom.label + ":", 20, y);
+                        doc.setFont(undefined, 'normal');
+                        doc.setTextColor(textColor);
+                        doc.setDrawColor(borderColor);
+                        doc.line(65, y, 190, y);
+                        doc.text(denom.value, 70, y - 1);
+                        y += 15;
+                    }
+                });
+            }
+
+            // Add cheque details if cheque withdrawal
+            if (formData.get('withdrawalMode') === 'cheque') {
+                addField("Cheque Number", formData.get('chequeNumber'), 140);
+                addField("Bank Name", formData.get('chequeBankName'), 155);
+            }
+
+            // Add signature section with accent color
+            doc.setTextColor(accentColor);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text("Signatures", 20, y - 30);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(textColor);
+
+            // Add signature lines
+            doc.setDrawColor(borderColor);
+            doc.line(20, y - 20, 90, y - 20);
+            doc.text("Account Holder's Signature", 20, y - 15);
+            
+            doc.line(140, y - 20, 190, y - 20);
+            doc.text("Bank Officer's Signature", 140, y - 15);
+
+            // Save the PDF
+            doc.save('Withdrawal_Slip.pdf');
+        }
+
+        // Handle form submission
+        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            generateWithdrawPDF(formData);
+        });
+
+        // Handle withdrawal mode change
+        document.getElementById('withdrawalMode').addEventListener('change', function() {
+            const chequeDetailsGroup = document.getElementById('chequeDetailsGroup');
+            chequeDetailsGroup.style.display = this.value === 'cheque' ? 'block' : 'none';
+        });
+
+        // Update form labels based on selected language
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            const language = this.value;
+            const labels = document.querySelectorAll('[data-en]');
+            
+            labels.forEach(label => {
+                label.textContent = label.getAttribute(`data-${language}`);
+            });
+        });
+    </script>
+</body>
+</html> 
